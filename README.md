@@ -42,33 +42,33 @@ git clone git@github.com:Developer-Akademie-DevSecOpsKurs/truck-signs-api.git
 cd truck-signs-api
 ```
 
-1. Copy the content of the example env file that is inside the tsa_app/settings folder into a .env file:
+2. Copy the content of the example env file that is inside the tsa_app/settings folder into a .env file:
 ```bash
-cd tsa_app/settings
+cd src/tsa_app/settings
 cp simple_env_config.env .env
 ```
 
-1. Create virtual environment:
+3. Create virtual environment:
 ```bash
 python -m venv <venv_name>
 ```
 
-1. Activate virtual environment:
+4. Activate virtual environment:
 ```bash
 source <venv_name>/scripts/activate
 ```
 
-1. Install requirements:
+5. Install requirements:
 ```bash
 pip install -r requirements.txt
 ```
 
-1. Migrate database:
+6. Migrate database:
 ```bash
 python src/manage.py migrate
 ```
 
-1. Start Python Dev Server:
+7. Start the Python Development Server:
 ```bash
 python src/manage.py runserver
 ```
@@ -135,9 +135,9 @@ python src/manage.py migrate
 python src/manage.py runserver
 ```
 
-1. Congratulations =) !!! The App should be running in [localhost:8000](http://localhost:8000)
+Congratulations =) !!! The App should be running in [localhost:8000](http://localhost:8000)
 
-1. (Optional step) To create a super user run:
+(Optional step) To create a super user run:
 ```bash
 python src/manage.py createsuperuser
 ```
