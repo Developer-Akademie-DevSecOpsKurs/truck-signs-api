@@ -2,7 +2,7 @@
 
 # Signs for Trucks
 
-![Python version](https://img.shields.io/badge/Python-3.12.0-4c566a?logo=python&&longCache=true&logoColor=white&colorB=pink&style=flat-square&colorA=4c566a) ![Django version](https://img.shields.io/badge/Django-5.2.7-4c566a?logo=django&&longCache=truelogoColor=white&colorB=pink&style=flat-square&colorA=4c566a) ![Django-RestFramework](https://img.shields.io/badge/Django_Rest_Framework-3.16.1-red.svg?longCache=true&style=flat-square&logo=django&logoColor=white&colorA=4c566a&colorB=pink)
+![Python version](https://img.shields.io/badge/Python-3.12.0-4c566a?logo=python&&longCache=true&logoColor=white&colorB=pink&style=flat-square&colorA=4c566a) ![Django version](https://img.shields.io/badge/Django-5.2.8-4c566a?logo=django&&longCache=truelogoColor=white&colorB=pink&style=flat-square&colorA=4c566a) ![Django-RestFramework](https://img.shields.io/badge/Django_Rest_Framework-3.16.1-red.svg?longCache=true&style=flat-square&logo=django&logoColor=white&colorA=4c566a&colorB=pink)
 
 ![Truck Signs](./src/screenshots/Truck_Signs_logo.png)
 
@@ -42,10 +42,9 @@ git clone git@github.com:Developer-Akademie-DevSecOpsKurs/truck-signs-api.git
 cd truck-signs-api
 ```
 
-2. Copy the content of the example env file that is inside the tsa_app/settings folder into a .env file:
+2. Copy the content of the example.env file into a .env file:
 ```bash
-cd src/tsa_app/settings
-cp simple_env_config.env .env
+cp example.env .env
 ```
 
 3. Create virtual environment:
@@ -103,8 +102,8 @@ The behavior of some of the views had to be modified to address functionalities 
 1. Configure the environment variables.
     1. Copy the content of the example env file that is inside the tsa_app/settings folder into a .env file:
         ```bash
-        cd tsa_app/settings
-        cp simple_env_config.env .env
+        cd truck-signs-api
+        cp example.env .env
         ```
     1. The new .env file should contain all the environment variables necessary to run all the django app in all the environments. However, the only needed variables for the development environment to run are the following:
         ```bash
@@ -143,7 +142,11 @@ python src/manage.py createsuperuser
 ```
 
 
-__NOTE:__ To create Truck vinyls with Truck logos in them, first create the __Category__ Truck Sign, and then the __Product__ (can have any name). This is to make sure the frontend retrieves the Truck vinyls for display in the Product Grid as it only fetches the products of the category Truck Sign.
+> [!NOTE]
+> To create Truck vinyls with Truck logos in them, first create the __Category__ Truck Sign,
+> and then the __Product__ (can have any name). This is to make sure the frontend retrieves
+> the Truck vinyls for display in the Product Grid as it only fetches the products of the
+> category Truck Sign.
 
 ---
 

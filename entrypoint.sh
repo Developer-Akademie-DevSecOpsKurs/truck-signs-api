@@ -10,13 +10,9 @@ done
 echo "PostgreSQL is active"
 
 python manage.py collectstatic --noinput
-python manage.py migrate
 python manage.py makemigrations
-
-gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000
-
-
+python manage.py migrate
 
 echo "Postgresql migrations finished"
 
-python manage.py runserver
+gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000
