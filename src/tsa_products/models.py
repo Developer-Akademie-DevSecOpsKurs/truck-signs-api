@@ -95,6 +95,7 @@ class LetteringItemVariation(models.Model):
             return "---"
 
 
+# TODO: needs decision about keeping/removing from team
 class Payment(models.Model):
     user_email = models.CharField(max_length=256)
     amount = models.FloatField(default=0.0)

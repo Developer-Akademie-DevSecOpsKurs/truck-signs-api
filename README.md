@@ -64,6 +64,7 @@ pip install -r requirements.txt
 
 6. Migrate database:
 ```bash
+python src/manage.py makemigrations
 python src/manage.py migrate
 ```
 
@@ -130,6 +131,7 @@ The behavior of some of the views had to be modified to address functionalities 
 
 1. Run the migrations and then the app:
 ```bash
+python src/manage.py makemigrations
 python src/manage.py migrate
 python src/manage.py runserver
 ```

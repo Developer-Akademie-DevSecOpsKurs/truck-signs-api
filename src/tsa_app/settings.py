@@ -4,8 +4,12 @@ Django settings for tsa_app project.
 
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODE = os.getenv("MODE", "dev")
+
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 ROOT_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES_DIR = os.path.join(ROOT_BASE_DIR, "templates")
 
@@ -63,16 +67,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "tsa_app.wsgi.application"
 
+db_engine = "django.db.backends.sqlite3" if MODE != "prod" else "django.db.backends.postgresql"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
+pg_config = {
+        "ENGINE": db_engine,
         "NAME": os.getenv("DB_NAME", "trucksigns_db"),
         "USER": os.getenv("DB_USER", "trucksigns_user"),
         "PASSWORD": os.getenv("DB_PASSWORD", "supertrucksignsuser!"),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
+}
+sqlite_config = {
+        "ENGINE": db_engine,
+        "NAME": BASE_DIR / "db.sqlite3",
     }
+
+db_config = sqlite_config if MODE != "prod" else pg_config
+
+DATABASES = {
+    
+    "default": db_config
 }
 
 AUTH_PASSWORD_VALIDATORS = [
