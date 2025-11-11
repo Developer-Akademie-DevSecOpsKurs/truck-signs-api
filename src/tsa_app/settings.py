@@ -8,9 +8,8 @@ from pathlib import Path
 
 MODE = os.getenv("MODE", "dev")
 
-# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = Path(__file__).resolve().parent.parent
-ROOT_BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(ROOT_BASE_DIR, "templates")
 
 load_dotenv(os.path.join(BASE_DIR, '.env'))
