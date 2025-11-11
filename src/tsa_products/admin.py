@@ -19,7 +19,7 @@ class OrderAdmin(admin.ModelAdmin):
     def get_product_variation_id(self, obj):
         try:
             return obj.product.id
-        except:
+        except AttributeError:
             return "No customized product"
 
     get_product_variation_id.short_description = "Customized Product ID"

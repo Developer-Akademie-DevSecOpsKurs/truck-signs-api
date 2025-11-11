@@ -77,7 +77,7 @@ class ProductVariation(models.Model):
     def __str__(self):
         try:
             return self.product.title + " - " + str(self.id)
-        except:
+        except AttributeError:
             return "Cancelled product"
 
 
@@ -91,7 +91,7 @@ class LetteringItemVariation(models.Model):
     def __str__(self):
         try:
             return self.lettering_item_category.title + " - " + self.lettering
-        except:
+        except AttributeError:
             return "---"
 
 

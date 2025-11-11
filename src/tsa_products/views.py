@@ -113,7 +113,7 @@ class CreateOrder(GenericAPIView):
 
         try:
             product_color = ProductColor.objects.get(id=data["product_color_id"])
-        except:
+        except ProductColor.DoesNotExist:
             product_color = None
         product_variation.product_color = product_color
         product_variation.amount = 1
@@ -153,8 +153,8 @@ class PaymentView(GenericAPIView):
                 order_serializer = OrderSerializer(order, data=request.data["order"], partial=True)
                 order_serializer.is_valid(raise_exception=True)
                 order = order_serializer.save()
-            except:
-                pass
+            except Exception as e:
+                return Response( {"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # Payment processing removed - implement your own payment logic here
             amount = int(order.get_total_price() * 100)
