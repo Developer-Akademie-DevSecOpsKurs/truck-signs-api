@@ -153,7 +153,7 @@ class PaymentView(GenericAPIView):
                 order_serializer = OrderSerializer(order, data=request.data["order"], partial=True)
                 order_serializer.is_valid(raise_exception=True)
                 order = order_serializer.save()
-            except Exception as e:
+            except Exception:
                 return Response( {"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # Payment processing removed - implement your own payment logic here
@@ -185,7 +185,7 @@ class PaymentView(GenericAPIView):
 
             return Response({"Result": "Success"}, status=status.HTTP_200_OK)
 
-        except:
+        except Exception:
             return Response({"Result": "Error during payment"}, status=status.HTTP_400_BAD_REQUEST)
 
 
