@@ -106,7 +106,7 @@ The behavior of some of the views had to be modified to address functionalities 
     ```
 1. Configure a virtual env and set up the database. See [Link for configuring Virtual Environment](https://docs.python-guide.org/dev/virtualenvs/) and [Link for Database setup](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).
 1. Configure the environment variables.
-    1. Copy the content of the example env file that is inside the tsa_app/settings folder into a .env file:
+    1. Copy the content of the `example.env` file that is on projects root level into a .env file:
         ```bash
         cd truck-signs-api
         cp example.env .env

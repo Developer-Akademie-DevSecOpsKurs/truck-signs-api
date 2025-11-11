@@ -8,15 +8,25 @@ from pathlib import Path
 
 MODE = os.getenv("MODE", "dev")
 
+# path: truck-signs-api/src = root of project tsa_app
 BASE_DIR = Path(__file__).resolve().parent.parent
-ROOT_BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATES_DIR = os.path.join(ROOT_BASE_DIR, "templates")
 
-load_dotenv(os.path.join(BASE_DIR, '.env'))
+# ROOT_BASE_DIR = Path(__file__).resolve().parent.parent
+# path: truck-signs-api = root of project truck-signs-api
+ROOT_BASE_DIR = BASE_DIR.parent
+
+# TEMPLATES_DIR = os.path.join(ROOT_BASE_DIR, "templates")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+
+# load_dotenv(os.path.join(BASE_DIR, '.env'))
+load_dotenv(os.path.join(ROOT_BASE_DIR, '.env'))
+print("BASE_DIR", BASE_DIR)
+print("ROOT_BASE_DIR", ROOT_BASE_DIR)
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-in-production")
 
 DEBUG = os.getenv("DEBUG", "False") == "True"
+print("Debug status", DEBUG)
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -110,10 +120,12 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(ROOT_BASE_DIR, "static/")
+# STATIC_ROOT = os.path.join(ROOT_BASE_DIR, "static/")
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(ROOT_BASE_DIR, "media")
+# MEDIA_ROOT = os.path.join(ROOT_BASE_DIR, "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 CORS_ALLOWED_ORIGINS = os.getenv(
     "CORS_ALLOWED_ORIGINS",
