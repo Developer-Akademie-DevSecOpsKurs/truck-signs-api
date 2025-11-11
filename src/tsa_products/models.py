@@ -14,7 +14,7 @@ class Category(models.Model):
     title = models.CharField(max_length=256)
     image = models.ImageField(upload_to="uploads/categories/")
     base_price = models.FloatField(default=0.0)
-    # -1 means any possitive amount
+    # -1 means any positive amount
     max_amount_of_lettering_items = models.IntegerField(default=-1)
     height = models.FloatField(default=0.0)
     width = models.FloatField(default=0.0)

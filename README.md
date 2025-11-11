@@ -23,7 +23,7 @@ The store also allows clients to upload their own designs and to customize them 
 * [Screenshots of the Django Backend Admin Panel](#screenshots)
     * [Mobile View](#mobile-view)
     * [Desktop View](#desktop-view)
-* [Additional Informations](#additional-nformations)
+* [Additional Information](#additional-information)
     * [Postgresql Database](#postgresql-database)
     * [Docker](#docker)
     * [Django and DRF](#django-and-drf)
@@ -179,7 +179,7 @@ python src/manage.py createsuperuser
 
 
 
-## Additional Informations
+## Additional Information
 
 ### Postgresql Database
 
