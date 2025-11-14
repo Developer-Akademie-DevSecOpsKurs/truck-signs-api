@@ -130,7 +130,7 @@ class LetteringItemVariationAdmin(admin.ModelAdmin):
         except:
             return "---"
 
-        get_amount_of_lettering.short_description = "Category"
+    get_lettering_item_category.short_description = "Category"
 
     def get_product_variation(self, obj):
         try:
@@ -138,9 +138,9 @@ class LetteringItemVariationAdmin(admin.ModelAdmin):
         except:
             return "---"
 
-        get_product_variation.short_description = "Product Variation"
-
-        search_fields = ["lettering_item_category", "lettering", "id"]
+    get_product_variation.short_description = "Product Variation"
+        
+    search_fields = ["lettering_item_category", "lettering", "id"]
 
 
 class PaymentAdmin(admin.ModelAdmin):
@@ -157,7 +157,7 @@ class PaymentAdmin(admin.ModelAdmin):
         except:
             return "---"
 
-        get_amount.short_description = "Amount"
+    get_amount.short_description = "Amount"
 
     search_fields = ["user_email", "id"]
 
