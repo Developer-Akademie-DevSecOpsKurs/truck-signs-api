@@ -28,7 +28,7 @@ class OrderAdmin(admin.ModelAdmin):
     def get_product(self, obj):
         try:
             return obj.product.product.id
-        except:
+        except AttributeError:
             return "No base product"
 
     get_product.short_description = "Base Product ID"
@@ -37,11 +37,11 @@ class OrderAdmin(admin.ModelAdmin):
     def get_product_category(self, obj):
         try:
             return obj.product.product.category
-        except:
+        except AttributeError:
             return "No category"
 
     get_product_category.short_description = "Product Category"
-    get_product_category.admin_order_field = "product__product__categotry"
+    get_product_category.admin_order_field = "product__product__category"
 
     search_fields = ["user_email", "id"]
 
@@ -98,7 +98,7 @@ class ProductVariationAdmin(admin.ModelAdmin):
     def get_amount(self, obj):
         try:
             return obj.amount
-        except:
+        except AttributeError:
             return "0"
 
     get_amount.short_description = "Amount of Product"
@@ -107,7 +107,7 @@ class ProductVariationAdmin(admin.ModelAdmin):
     def get_amount_of_lettering(self, obj):
         try:
             return len(obj.get_all_lettering_items())
-        except:
+        except (AttributeError, TypeError):
             return "0"
 
     get_amount_of_lettering.short_description = "Amount of Lettering"
