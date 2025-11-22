@@ -1,23 +1,34 @@
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.conf import settings
-from django.core.mail import send_mail
-from django.views.decorators.csrf import csrf_exempt
-from django.utils import timezone
-from django.template.loader import render_to_string
-from django.core.mail import EmailMessage
-from django.core.mail import EmailMultiAlternatives
-
-import json
 from datetime import datetime
 
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.generics import *
-from rest_framework.views import APIView
+from rest_framework.generics import (
+    ListAPIView,
+    RetrieveAPIView,
+    GenericAPIView,
+    CreateAPIView,
+)
 
-from .models import *
-from .serializers import *
+from .models import (
+    Category,
+    LetteringItemCategory,
+    Product,
+    ProductColor,
+    ProductVariation,
+    LetteringItemVariation,
+    Order,
+    Comment,
+)
+from .serializers import (
+    CategorySerializer,
+    LetteringItemCategorySerializer,
+    ProductSerializer,
+    ProductColorSerializer,
+    ProductVariationSerializer,
+    OrderSerializer,
+    PaymentSerializer,
+    CommentSerializer,
+)
 
 # admin_email = settings.EMAIL_ADMIN
 # current_admin_domain = settings.CURRENT_ADMIN_DOMAIN
@@ -154,10 +165,10 @@ class PaymentView(GenericAPIView):
                 order_serializer.is_valid(raise_exception=True)
                 order = order_serializer.save()
             except Exception:
-                return Response( {"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # Payment processing removed - implement your own payment logic here
-            amount = int(order.get_total_price() * 100)
+            # amount = int(order.get_total_price() * 100)
 
             # Send Email to user
             # email_subject="Purchase made."

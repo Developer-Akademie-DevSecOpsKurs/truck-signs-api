@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import *
+from .models import (
+    Category,
+    LetteringItemCategory,
+    Product,
+    ProductColor,
+    ProductVariation,
+    LetteringItemVariation,
+    Payment,
+    Order,
+    Comment,
+)
 
 # Register your models here.
 
@@ -127,7 +137,7 @@ class LetteringItemVariationAdmin(admin.ModelAdmin):
     def get_lettering_item_category(self, obj):
         try:
             return obj.lettering_item_category
-        except:
+        except RuntimeError:
             return "---"
 
     get_lettering_item_category.short_description = "Category"
@@ -135,11 +145,11 @@ class LetteringItemVariationAdmin(admin.ModelAdmin):
     def get_product_variation(self, obj):
         try:
             return obj.product_variation
-        except:
+        except RuntimeError:
             return "---"
 
     get_product_variation.short_description = "Product Variation"
-        
+
     search_fields = ["lettering_item_category", "lettering", "id"]
 
 
@@ -154,7 +164,7 @@ class PaymentAdmin(admin.ModelAdmin):
     def get_amount(self, obj):
         try:
             return str(obj.amount / 100.0) + " USD"
-        except:
+        except RuntimeError:
             return "---"
 
     get_amount.short_description = "Amount"

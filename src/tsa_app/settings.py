@@ -13,8 +13,8 @@ logger = logging.getLogger(__name__)
 
 # Configure logging format
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(filename)s:%(funcName)s:%(lineno)d',  # noqa E501
-    datefmt='%Y-%m-%d_%H-%M-%S'
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s - %(filename)s:%(funcName)s:%(lineno)d",  # noqa E501
+    datefmt="%Y-%m-%d_%H-%M-%S",
 )
 logger.setLevel(level="INFO")
 
@@ -25,11 +25,9 @@ ROOT_BASE_DIR = BASE_DIR.parent
 TEMPLATES_DIR = BASE_DIR / "templates"
 
 # load environment variables from .env file
-has_env_vars_configuration = load_dotenv(ROOT_BASE_DIR / '.env')
+has_env_vars_configuration = load_dotenv(ROOT_BASE_DIR / ".env")
 if not has_env_vars_configuration:
-    logger.warning(
-        "could not find .env file, make sure env variables are set as required"
-    )
+    logger.warning("could not find .env file, make sure env variables are set as required")
 
 # read configuration from environment, set secure defaults where possible
 # adjust django settings depending on environment configuration
@@ -109,12 +107,12 @@ WSGI_APPLICATION = "tsa_app.wsgi.application"
 db_engine = "django.db.backends.sqlite3" if MODE != "prod" else "django.db.backends.postgresql"  # noqa E501
 
 pg_config = {
-        "ENGINE": db_engine,
-        "NAME": os.getenv("DB_NAME", "trucksigns_db"),
-        "USER": os.getenv("DB_USER", "trucksigns_user"),
-        "PASSWORD": os.getenv("DB_PASSWORD", "supertrucksignsuser!"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+    "ENGINE": db_engine,
+    "NAME": os.getenv("DB_NAME", "trucksigns_db"),
+    "USER": os.getenv("DB_USER", "trucksigns_user"),
+    "PASSWORD": os.getenv("DB_PASSWORD", "supertrucksignsuser!"),
+    "HOST": os.getenv("DB_HOST", "localhost"),
+    "PORT": os.getenv("DB_PORT", "5432"),
 }
 
 sqlite_config = {
@@ -124,9 +122,7 @@ sqlite_config = {
 
 db_config = sqlite_config if MODE != "prod" else pg_config
 
-DATABASES = {
-    "default": db_config
-}
+DATABASES = {"default": db_config}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -181,7 +177,7 @@ if os.getenv("CLOUD_NAME", ""):
 if MODE != "prod" or DEBUG is True:
     logger.debug("dumping settings for debugging/development purposes:")
     print("")
-    print(f"[{"---"*20} \t\tSTART SETTINGS DEBUG INFO \t{"---"*20}]")
+    print(f"[{"---" * 20} \t\tSTART SETTINGS DEBUG INFO \t{"---" * 20}]")
     print("")
     print(f"[ROOT BASE DIR]: \t\t{ROOT_BASE_DIR}")
     print(f"[BASE DIR]: \t\t\t{BASE_DIR}")
@@ -190,8 +186,8 @@ if MODE != "prod" or DEBUG is True:
     print(f"[DEBUG MODE ENABLED]: \t\t{DEBUG}")
     print(f"[ALLOWED HOSTS]: \t\t{ALLOWED_HOSTS}")
     print("[DB CONFIG]:")
-    for key, value in DATABASES['default'].items():
+    for key, value in DATABASES["default"].items():
         print(f"  {key}: \t\t\t{value}")
     print("")
-    print(f"[{"---"*20} \t\tEND SETTINGS DEBUG INFO \t{"---"*20}]")
+    print(f"[{"---" * 20} \t\tEND SETTINGS DEBUG INFO \t{"---" * 20}]")
     print("")
