@@ -13,21 +13,23 @@ The store also allows clients to upload their own designs and to customize them 
 
 ## Table of Contents
 
-* [Prerequisites](#prerequisites)
-* [Quickstart](#quickstart)
-* [Usage](#usage)
-    * [Settings](#settings)
-    * [Models](#models)
-    * [Brief Explanation of the Views](#brief-explanation-of-the-views)
-    * [Installation](#installation)
-* [Screenshots of the Django Backend Admin Panel](#screenshots)
-    * [Mobile View](#mobile-view)
-    * [Desktop View](#desktop-view)
-* [Additional Information](#additional-information)
-    * [Postgresql Database](#postgresql-database)
-    * [Docker](#docker)
-    * [Django and DRF](#django-and-drf)
-    * [Miscellaneous](#miscellaneous)
+- [Signs for Trucks](#signs-for-trucks)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Quickstart](#quickstart)
+  - [Usage](#usage)
+    - [Settings](#settings)
+    - [Models](#models)
+    - [Brief Explanation of the Views](#brief-explanation-of-the-views)
+    - [Installation](#installation)
+  - [Screenshots of the Django Backend Admin Panel](#screenshots-of-the-django-backend-admin-panel)
+    - [Mobile View](#mobile-view)
+    - [Desktop View](#desktop-view)
+  - [Additional Information](#additional-information)
+    - [Postgresql Database](#postgresql-database)
+    - [Docker](#docker)
+    - [Django and DRF](#django-and-drf)
+    - [Miscellaneous](#miscellaneous)
 
 ## Prerequisites
 
@@ -82,7 +84,9 @@ python src/manage.py runserver
 
 ### Settings
 
-The __settings__ folder inside the src/tsa_app folder contains the different setting's configuration for each environment (so far the environments are development, docker testing, and production). Those files are extensions of the base.py file which contains the basic configuration shared among the different environments (for example, the value of the template directory location). In addition, the .env file inside this folder has the environment variables that are mostly sensitive information and should always be configured before use. By default, the environment in use is the decker testing. To change between environments modify the \_\_init.py\_\_ file.
+The `settings.py` folder inside the `src/tsa_app` folder contains the different settings configuration for the application.
+
+The `example.env` file in the project root contains an overview about configuration values that can be set for the app.
 
 ### Models
 
@@ -103,15 +107,19 @@ The behavior of some of the views had to be modified to address functionalities 
 1. Clone the repo:
     ```bash
     git clone <INSERT URL>
+    cd truck-signs-api
     ```
-1. Configure a virtual env and set up the database. See [Link for configuring Virtual Environment](https://docs.python-guide.org/dev/virtualenvs/) and [Link for Database setup](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).
+1. Configure a virtual env
+    ```bash
+    python -m venv venv
+    venv\Scripts\activate
+    ```
 1. Configure the environment variables.
-    1. Copy the content of the `example.env` file that is on projects root level into a .env file:
+    1. Copy the content of the `example.env` file that is on projects root level into a `.env` file:
         ```bash
-        cd truck-signs-api
         cp example.env .env
         ```
-    1. The new .env file should contain all the environment variables necessary to run all the django app in all the environments. However, the only needed variables for the development environment to run are the following:
+    2. The new `.env` file should contain all the environment variables necessary to run all the django app in all the environments. However, the only needed variables for the development environment to run are the following:
         ```bash
         SECRET_KEY
         DB_NAME
@@ -122,7 +130,7 @@ The behavior of some of the views had to be modified to address functionalities 
         EMAIL_HOST_USER
         EMAIL_HOST_PASSWORD
         ```
-    1. For the database, the default configurations should be:
+    3. For the `postgres` database, the default configuration should be:
         ```bash
         DB_NAME=trucksigns_db
         DB_USER=trucksigns_user
@@ -130,32 +138,29 @@ The behavior of some of the views had to be modified to address functionalities 
         DB_HOST=localhost
         DB_PORT=5432
         ```
-    1. The SECRET_KEY is the django secret key. To generate a new one see: [Stackoverflow Link](https://stackoverflow.com/questions/41298963/is-there-a-function-for-generating-settings-secret-key-in-django)
+    4. The SECRET_KEY is the django secret key. To generate a new one see: [Stackoverflow Link](https://stackoverflow.com/questions/41298963/is-there-a-function-for-generating-settings-secret-key-in-django)
 
-    1. The EMAIL_HOST_USER and the EMAIL_HOST_PASSWORD are the credentials to send emails from the website when a client makes a purchase. This is currently disable, but the code to activate this can be found in views.py in the create order view as comments. Therefore, any valid email and password will work.
-
+    5. The `EMAIL_HOST_USER` and the `EMAIL_HOST_PASSWORD` are the credentials to send emails from the website when a client makes a purchase. This is currently disable, but the code to activate this can be found in views.py in the create order view as comments. Therefore, any valid email and password will work.
 1. Run the migrations:
-```bash
-python src/manage.py makemigrations
-python src/manage.py migrate
-```
-
+    ```bash
+    python src/manage.py makemigrations
+    python src/manage.py migrate
+    ```
 1. Collect static files:
-```bash
-python src/manage.py collectstatic
-```
-
+    ```bash
+    python src/manage.py collectstatic
+    ```
 1. Run the app:
-```bash
-python src/manage.py runserver
-```
+    ```bash
+    python src/manage.py runserver
+    ```
+1. (Optional step) To create a super user run:
+    ```bash
+    python src/manage.py createsuperuser
+    ```
+1. (Optional step) Set up the database. [Django database setup example](https://www.digitalocean.com/community/tutorials/how-to-set-up-django-with-postgres-nginx-and-gunicorn-on-ubuntu-16-04).
 
 Congratulations =) !!! The App should be running in [localhost:8000](http://localhost:8000)
-
-(Optional step) To create a super user run:
-```bash
-python src/manage.py createsuperuser
-```
 
 > [!NOTE]
 > To create Truck vinyls with Truck logos in them, first create the __Category__ Truck Sign,
@@ -165,32 +170,32 @@ python src/manage.py createsuperuser
 
 ---
 
-<a name="screenshots"></a>
-
 ## Screenshots of the Django Backend Admin Panel
 
 ### Mobile View
 
-<div align="center">
+<div style="padding: 0 5rem; width: 100%;  display: flex; gap: 5rem; justify-content: center; flex-wrap: wrap;">
 
-![alt text](./src/screenshots/Admin_Panel_View_Mobile.png)  ![alt text](./src/screenshots/Admin_Panel_View_Mobile_2.png) ![alt text](./src/screenshots/Admin_Panel_View_Mobile_3.png)
+![alt text](./src/screenshots/Admin_Panel_View_Mobile.png)
+
+![alt text](./src/screenshots/Admin_Panel_View_Mobile_2.png)
+
+![alt text](./src/screenshots/Admin_Panel_View_Mobile_3.png)
 
 </div>
----
 
 ### Desktop View
 
-![alt text](./src/screenshots/Admin_Panel_View.png)
 
----
+<div style="padding: 0 5rem; width: 100%; display: flex; flex-direction: column; gap: 2rem; align-items: center; justify-content: center;">
+
+![alt text](./src/screenshots/Admin_Panel_View.png)
 
 ![alt text](./src/screenshots/Admin_Panel_View_2.png)
 
----
-
 ![alt text](./src/screenshots/Admin_Panel_View_3.png)
 
-
+</div>
 
 ## Additional Information
 
