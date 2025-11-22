@@ -3,18 +3,18 @@ from django.urls import re_path
 # from .views import PricesPageAPI,HowToAPIView, CreateOrderAPI, OrderSummaryAPIView, RetrieveAllProductColorsAPI
 from .views import (
     CategoryListView,
+    CommentCreateView,
+    CommentsView,
+    CreateOrder,
     LetteringItemCategoryListView,
-    ProductListView,
-    ProductFromCategoryListView,
-    ProductVariationRetrieveView,
+    LogoListView,
+    PaymentView,
     ProductColorListView,
     ProductDetail,
-    LogoListView,
-    CreateOrder,
+    ProductFromCategoryListView,
+    ProductListView,
+    ProductVariationRetrieveView,
     RetrieveOrder,
-    PaymentView,
-    CommentsView,
-    CommentCreateView,
     UploadCustomerImage,
 )
 

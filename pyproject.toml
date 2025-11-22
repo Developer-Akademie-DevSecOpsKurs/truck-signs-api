@@ -6,6 +6,7 @@ skip-string-normalization = false
 [tool.isort]
 profile = "black"
 line_length = 120
+skip=["site-packages", "__pycache__"]
 
 [tool.flake8]
 select = ["E", "W", "F"]

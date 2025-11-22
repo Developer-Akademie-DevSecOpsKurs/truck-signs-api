@@ -2,14 +2,14 @@ from django.contrib import admin
 
 from .models import (
     Category,
+    Comment,
     LetteringItemCategory,
+    LetteringItemVariation,
+    Order,
+    Payment,
     Product,
     ProductColor,
     ProductVariation,
-    LetteringItemVariation,
-    Payment,
-    Order,
-    Comment,
 )
 
 # Register your models here.

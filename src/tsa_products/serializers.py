@@ -1,15 +1,15 @@
 from rest_framework import serializers
 
 from .models import (
-    Product,
     Category,
-    ProductVariation,
-    ProductColor,
-    LetteringItemVariation,
-    LetteringItemCategory,
-    Payment,
-    Order,
     Comment,
+    LetteringItemCategory,
+    LetteringItemVariation,
+    Order,
+    Payment,
+    Product,
+    ProductColor,
+    ProductVariation,
 )
 
 

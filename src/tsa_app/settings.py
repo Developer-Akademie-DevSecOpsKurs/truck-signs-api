@@ -2,11 +2,11 @@
 Django settings for tsa_app project.
 """
 
-import os
-from dotenv import load_dotenv
-from pathlib import Path
 import logging
+import os
+from pathlib import Path
 
+from dotenv import load_dotenv
 
 # Configure Django logging
 logger = logging.getLogger(__name__)
