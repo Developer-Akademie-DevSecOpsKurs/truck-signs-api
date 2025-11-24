@@ -8,26 +8,52 @@ from tsa_products.models import Category
 
 class CategoryTestCase(TestCase):
 
-    def test_success_create_category(self):
-        initial_number_of_categories = Category.objects.count()
+    @classmethod
+    def setUpTestData(self):
+        # Creates testing data for the test cases.
+        self.test_title = "test"
+        self.test_image = "test-path"
+        self.test_base_price = 0.0
+        self.test_max_amount_of_lettering_items = -1
+        self.test_height = 0.0
+        self.test_width = 0.0
 
-        test_category = Category.objects.create(
-            title="test", image="test", base_price=0.0, max_amount_of_lettering_items=-1, height=0.0, width=0.0
+    def setUp(self):
+        # Ensures there are categories in the db before a test case is running.
+        Category.objects.all().delete()
+
+    def test_successful_category_creation(self):
+        # Tests the creation of a category
+        category = Category.objects.create(
+            title=self.test_title,
+            image=self.test_image,
+            base_price=self.test_base_price,
+            max_amount_of_lettering_items=self.test_max_amount_of_lettering_items,
+            height=self.test_height,
+            width=self.test_width,
         )
+        # Runs model validation for given data.
+        category.full_clean()
+        self.assertEqual(Category.objects.count(), 1)
 
-        number_of_categories = Category.objects.count()
-
-        self.assertEqual(initial_number_of_categories + 1, number_of_categories)
-
-    def test_failure_create_category_without_title(self):
-        test_category = Category(
-            title=None,
-            image="test",
-            base_price=0.0,
-            max_amount_of_lettering_items=-1,
-            height=0.0,
-            width=0.0,
-        )
-
+    def test_failure_category_creation_without_title(self):
+        # Test the failure of category creation without a title
         with self.assertRaises(ValidationError):
-            test_category.full_clean()
+            category = Category(
+                image=self.test_image,
+            )
+            category.full_clean()
+            category.save()
+        self.assertEqual(Category.objects.count(), 0)
+        self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
+
+    def test_failure_category_creation_without_image_path(self):
+        # Test the failure of category creation without an image-path
+        with self.assertRaises(ValidationError):
+            category = Category(
+                title=self.test_title,
+            )
+            category.full_clean()
+            category.save()
+        self.assertEqual(Category.objects.count(), 0)
+        self.assertRaisesMessage(ValidationError, "Missing Property 'image'. This field cannot be blank.")
