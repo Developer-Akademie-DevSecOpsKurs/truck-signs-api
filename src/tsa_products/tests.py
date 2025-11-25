@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from tsa_products.models import Category, LetteringItemCategory, ProductColor, Product
+from tsa_products.models import Category, LetteringItemCategory, ProductColor, Product, Comment
 
 # Create your tests here.
 
@@ -23,7 +23,7 @@ class CategoryTestCase(TestCase):
         Category.objects.all().delete()
 
     def test_successful_category_creation(self):
-        # Tests the creation of a category
+        # Tests the creation of a category.
         category = Category.objects.create(
             title=self.test_title,
             image=self.test_image,
@@ -37,7 +37,7 @@ class CategoryTestCase(TestCase):
         self.assertEqual(Category.objects.count(), 1)
 
     def test_failure_category_creation_without_title(self):
-        # Test the failure of category creation without a title
+        # Test the failure of category creation without a title.
         with self.assertRaises(ValidationError):
             category = Category(
                 image=self.test_image,
@@ -48,7 +48,7 @@ class CategoryTestCase(TestCase):
         self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
 
     def test_failure_category_creation_without_image_path(self):
-        # Test the failure of category creation without an image-path
+        # Test the failure of category creation without an image-path.
         with self.assertRaises(ValidationError):
             category = Category(
                 title=self.test_title,
@@ -71,7 +71,7 @@ class LetteringItemCategoryTestCase(TestCase):
         LetteringItemCategory.objects.all().delete()
 
     def test_successful_lettering_item_category_creation(self):
-        # Tests the creation of a lettering item category
+        # Tests the creation of a lettering item category.
         lettering_item_category = LetteringItemCategory.objects.create(
             title=self.test_title,
             price=self.test_price
@@ -81,7 +81,7 @@ class LetteringItemCategoryTestCase(TestCase):
         self.assertEqual(LetteringItemCategory.objects.count(), 1)
 
     def test_failure_lettering_category_creation_without_title(self):
-        # Test the failure of lettering item category creation without a title
+        # Test the failure of lettering item category creation without a title.
         with self.assertRaises(ValidationError):
             lettering_item_category = LetteringItemCategory(
                 price=self.test_price,
@@ -104,7 +104,7 @@ class ProductColorTestCase(TestCase):
         ProductColor.objects.all().delete()
 
     def test_successful_product_color_creation(self):
-        # Tests the creation of a product color
+        # Tests the creation of a product color.
         product_color = ProductColor.objects.create(
             color_in_hex=self.test_color_in_hex,
             color_nickname=self.test_color_nickname
@@ -119,7 +119,10 @@ class ProductTestCase(TestCase):
     def setUpTestData(self):
         # Creates testing data for the test cases.
         self.test_category = Category.objects.create(title="test", image="test-path")
-        self.test_title = "test-title"
+        self.test_title = "test-title",
+        self.test_image = "test-path",
+        self.test_detail_image = "test-detail-path",
+        self.test_is_uploaded=False
 
     def setUp(self):
         # Ensures there are categories in the db before a test case is running.
@@ -129,14 +132,17 @@ class ProductTestCase(TestCase):
         # Tests the creation of a product
         product = Product.objects.create(
             category=self.test_category,
-            title=self.test_title
+            title=self.test_title,
+            image=self.test_image,
+            detail_image=self.test_detail_image,
+            is_uploaded=self.test_is_uploaded
         )
         # Runs model validation for given data.
         product.full_clean()
         self.assertEqual(Product.objects.count(), 1)
 
     def test_failure_product_creation_without_category(self):
-        # Test the failure of product creation without a category
+        # Test the failure of product creation without a category.
         with self.assertRaises(ValidationError):
             product = Product(
                 title=self.test_title
@@ -147,7 +153,7 @@ class ProductTestCase(TestCase):
         self.assertRaisesMessage(ValidationError, "Missing Property 'category'. This field cannot be blank.")
 
     def test_failure_product_creation_without_title(self):
-        # Test the failure of product creation without a title
+        # Test the failure of product creation without a title.
         with self.assertRaises(ValidationError):
             product = Product(
                 category=self.test_category
@@ -156,3 +162,52 @@ class ProductTestCase(TestCase):
             product.save()
         self.assertEqual(Product.objects.count(), 0)
         self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
+
+class CommentTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(self):
+        # Creates testing data for the test cases.
+        self.test_user_email = "test-email",
+        self.test_image = "test-path",
+        self.test_text = "test-text",
+        self.test_visible = False
+
+    def setUp(self):
+        # Ensures there are categories in the db before a test case is running.
+        Comment.objects.all().delete()
+
+    def test_successful_comment_creation(self):
+        # Tests the creation of a comment.
+        comment = Comment.objects.create(
+            user_email=self.test_user_email,
+            image=self.test_image,
+            text=self.test_text,
+            visible=self.test_visible
+        )
+        # Runs model validation for given data.
+        comment.full_clean()
+        self.assertEqual(Comment.objects.count(), 1)
+
+    def test_failure_comment_creation_without_user_email(self):
+        # Test the failure of comment creation without an user mail address.
+        with self.assertRaises(ValidationError):
+            comment = Comment(
+                image=self.test_image
+            )
+            comment.full_clean()
+            comment.save()
+        self.assertEqual(Comment.objects.count(), 0)
+        self.assertRaisesMessage(ValidationError, "Missing Property 'user_email'. This field cannot be blank.")
+
+    def test_failure_comment_creation_without_image(self):
+        # Test the failure of comment creation without an image-path.
+        with self.assertRaises(ValidationError):
+            comment = Comment(
+                user_email=self.test_user_email
+            )
+            comment.full_clean()
+            comment.save()
+        self.assertEqual(Comment.objects.count(), 0)
+        self.assertRaisesMessage(ValidationError, "Missing Property 'image'. This field cannot be blank.")
+
