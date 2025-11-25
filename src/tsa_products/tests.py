@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.test import TestCase  # noqa F401
+from django.test import TestCase
 
 from tsa_products.models import Category
 
