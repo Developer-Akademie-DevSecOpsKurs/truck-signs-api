@@ -119,9 +119,9 @@ class ProductTestCase(TestCase):
     def setUpTestData(self):
         # Creates testing data for the test cases.
         self.test_category = Category.objects.create(title="test", image="test-path")
-        self.test_title = "test-title",
-        self.test_image = "test-path",
-        self.test_detail_image = "test-detail-path",
+        self.test_title = "test-title"
+        self.test_image = "test-path"
+        self.test_detail_image = "test-detail-path"
         self.test_is_uploaded=False
 
     def setUp(self):
@@ -168,9 +168,9 @@ class CommentTestCase(TestCase):
     @classmethod
     def setUpTestData(self):
         # Creates testing data for the test cases.
-        self.test_user_email = "test-email",
-        self.test_image = "test-path",
-        self.test_text = "test-text",
+        self.test_user_email = "test-email"
+        self.test_image = "test-path"
+        self.test_text = "test-text"
         self.test_visible = False
 
     def setUp(self):
