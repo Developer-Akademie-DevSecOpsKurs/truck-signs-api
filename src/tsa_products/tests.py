@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from tsa_products.models import Category
+from tsa_products.models import Category, LetteringItemCategory
 
 # Create your tests here.
 
@@ -44,8 +44,8 @@ class CategoryTestCase(TestCase):
             )
             category.full_clean()
             category.save()
-        self.assertEqual(Category.objects.count(), 0)
-        self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
+            self.assertEqual(Category.objects.count(), 0)
+            self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
 
     def test_failure_category_creation_without_image_path(self):
         # Test the failure of category creation without an image-path
@@ -55,5 +55,38 @@ class CategoryTestCase(TestCase):
             )
             category.full_clean()
             category.save()
-        self.assertEqual(Category.objects.count(), 0)
-        self.assertRaisesMessage(ValidationError, "Missing Property 'image'. This field cannot be blank.")
+            self.assertEqual(Category.objects.count(), 0)
+            self.assertRaisesMessage(ValidationError, "Missing Property 'image'. This field cannot be blank.")
+
+class LetteringItemCategoryTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(self):
+        # Creates testing data for the test cases.
+        self.test_title = "test"
+        self.test_price = 0.0
+
+    def setUp(self):
+        # Ensures there are categories in the db before a test case is running.
+        LetteringItemCategory.objects.all().delete()
+
+    def test_successful_lettering_item_category_creation(self):
+        # Tests the creation of a lettering item category
+        lettering_item_category = LetteringItemCategory.objects.create(
+            title=self.test_title,
+            price=self.test_price
+        )
+        # Runs model validation for given data.
+        lettering_item_category.full_clean()
+        self.assertEqual(LetteringItemCategory.objects.count(), 1)
+
+    def test_failure_category_creation_without_title(self):
+        # Test the failure of lettering item category creation without a title
+        with self.assertRaises(ValidationError):
+            lettering_item_category = LetteringItemCategory(
+                price=self.test_price,
+            )
+            lettering_item_category.full_clean()
+            lettering_item_category.save()
+            self.assertEqual(LetteringItemCategory.objects.count(), 0)
+            self.assertRaisesMessage(ValidationError, "Missing Property 'title'. This field cannot be blank.")
