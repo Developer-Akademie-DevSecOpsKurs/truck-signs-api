@@ -43,7 +43,6 @@ class ProductVariationTestCase(TestCase):
         # Act: execute the (inter)action that should be tested
         #      -> retrieve all items sorted by their id
         all_items = test_product_variation.get_all_lettering_items()
-        sorted_items = all_items.order_by("id")
 
         # Assert: Check if the actual result of the actions match the expectations
         self.assertQuerySetEqual(
