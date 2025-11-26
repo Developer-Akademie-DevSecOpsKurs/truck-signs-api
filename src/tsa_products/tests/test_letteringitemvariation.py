@@ -1,6 +1,8 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
-from tsa_products.models import LetteringItemVariation, LetteringItemCategory, ProductVariation, Product, Category
+from django.test import TestCase
+
+from tsa_products.models import Category, LetteringItemCategory, LetteringItemVariation, Product, ProductVariation
+
 
 class LetteringItemVariationTestCase(TestCase):
     @classmethod

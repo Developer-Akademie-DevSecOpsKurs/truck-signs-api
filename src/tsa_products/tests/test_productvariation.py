@@ -1,6 +1,8 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
-from tsa_products.models import ProductVariation, Product, ProductColor, LetteringItemVariation, Category
+from django.test import TestCase
+
+from tsa_products.models import Category, LetteringItemVariation, Product, ProductColor, ProductVariation
+
 
 class ProductVariationTestCase(TestCase):
     @classmethod
@@ -31,14 +33,21 @@ class ProductVariationTestCase(TestCase):
             product_variation.save()
         self.assertEqual(ProductVariation.objects.count(), 0)
 
-    def test_success_get_all_lettering_items_method(self):
+    def test_success_get_all_lettering_items_sorted_by_id(self):
         """Test get_all_lettering_items method returns all related items."""
+        # Arrange: setup necessary variables and data for the test
         test_product_variation = ProductVariation.objects.create(product=self.test_product)
         item1 = LetteringItemVariation.objects.create(product_variation=test_product_variation)
         item2 = LetteringItemVariation.objects.create(product_variation=test_product_variation)
-        items = test_product_variation.get_all_lettering_items()
+
+        # Act: execute the (inter)action that should be tested
+        #      -> retrieve all items sorted by their id
+        all_items = test_product_variation.get_all_lettering_items()
+        sorted_items = all_items.order_by("id")
+
+        # Assert: Check if the actual result of the actions match the expectations
         self.assertQuerySetEqual(
-            items.order_by("id"),
+            all_items.order_by("id"),
             [item1, item2],
             ordered=True,
         )

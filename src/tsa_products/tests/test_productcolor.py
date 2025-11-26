@@ -1,5 +1,7 @@
 from django.test import TestCase
+
 from tsa_products.models import ProductColor
+
 
 class ProductColorTestCase(TestCase):
     @classmethod

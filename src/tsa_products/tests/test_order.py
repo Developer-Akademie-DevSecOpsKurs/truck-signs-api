@@ -1,7 +1,9 @@
-from django.test import TestCase
 from django.core.exceptions import ValidationError
+from django.test import TestCase
 from django.utils import timezone
-from tsa_products.models import Order, ProductVariation, Product, Category
+
+from tsa_products.models import Category, Order, Product, ProductVariation
+
 
 class OrderTestCase(TestCase):
     @classmethod
