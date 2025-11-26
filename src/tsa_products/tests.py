@@ -196,6 +196,18 @@ class ProductVariationTestCase(TestCase):
             product_variation.save()
         self.assertEqual(ProductVariation.objects.count(), 0)
 
+    def test_success_get_all_lettering_items_method(self):
+        test_product_variation = ProductVariation.objects.create(product=self.test_product)
+        item1 = LetteringItemVariation.objects.create(product_variation=test_product_variation)
+        item2 = LetteringItemVariation.objects.create(product_variation=test_product_variation)
+
+        items = test_product_variation.get_all_lettering_items()
+        self.assertQuerySetEqual(
+            items.order_by("id"),
+            [item1, item2],
+            ordered=True,
+        )
+
 
 class LetteringItemVariationTestCase(TestCase):
 
