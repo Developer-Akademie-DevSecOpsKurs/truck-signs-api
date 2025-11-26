@@ -1,8 +1,7 @@
 from django.core.exceptions import ValidationError
-from builtins import ValueError
 from django.test import TestCase
 
-from tsa_products.models import Category, Comment, LetteringItemCategory, Product, ProductColor
+from tsa_products.models import Category, Comment, LetteringItemCategory, Product, ProductColor, ProductVariation
 
 # Create your tests here.
 
@@ -154,6 +153,38 @@ class ProductTestCase(TestCase):
             product.save()
         self.assertEqual(Product.objects.count(), 0)
 
+class ProductVariationTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(self):
+        # Creates testing data for the test cases.
+        self.test_product = Product.objects.create(category=Category.objects.create(title="test", image="test-path"), title="test-title")
+        self.test_product_color = ProductColor.objects.create(color_nickname="test-color-name")
+        self.test_amount = 1
+
+    def setUp(self):
+        # Ensures there are categories in the db before a test case is running.
+        ProductVariation.objects.all().delete()
+
+    def test_successful_product_variation_creation(self):
+        # Tests the creation of a product variation.
+        product_variation = ProductVariation.objects.create(
+            product = self.test_product,
+            product_color = self.test_product_color,
+            amount = self.test_amount
+        )
+        # Runs model validation for given data.
+        product_variation.full_clean()
+        self.assertEqual(ProductVariation.objects.count(), 1)
+    
+    def test_failure_product_variation_creation_without_product(self):
+        # Test the failure of product variation creation without a product.
+        with self.assertRaisesMessage(ValidationError, "{'product': ['This field cannot be blank.']}"):
+            product_variation = ProductVariation(amount = self.test_amount)
+            product_variation.full_clean()
+            product_variation.save()
+        self.assertEqual(ProductVariation.objects.count(), 0)
+
 
 class CommentTestCase(TestCase):
 
@@ -193,4 +224,6 @@ class CommentTestCase(TestCase):
             comment.full_clean()
             comment.save()
         self.assertEqual(Comment.objects.count(), 0)
+
+
 
