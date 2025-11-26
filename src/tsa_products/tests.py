@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from tsa_products.models import Category, Comment, LetteringItemCategory, Product, ProductColor, ProductVariation
+from tsa_products.models import Category, Comment, LetteringItemCategory, Product, ProductColor, ProductVariation, LetteringItemVariation
 
 # Create your tests here.
 
@@ -184,6 +184,39 @@ class ProductVariationTestCase(TestCase):
             product_variation.full_clean()
             product_variation.save()
         self.assertEqual(ProductVariation.objects.count(), 0)
+
+
+class LetteringItemVariationTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(self):
+        # Creates testing data for the test cases.
+        self.test_lettering_item_category = LetteringItemCategory.objects.create(title="test")
+        self.test_lettering = "test"
+        self.test_product_variation = ProductVariation.objects.create(product=Product.objects.create(category=Category.objects.create(title="test", image="test-path"), title="test-title"))
+
+    def setUp(self):
+        # Ensures there are categories in the db before a test case is running.
+        LetteringItemVariation.objects.all().delete()
+
+    def test_successful_lettering_item_variation_creation(self):
+        # Tests the creation of a lettering item variation.
+        lettering_item_variation = LetteringItemVariation.objects.create(
+            lettering_item_category = self.test_lettering_item_category,
+            lettering = self.test_lettering,
+            product_variation = self.test_product_variation
+        )
+        # Runs model validation for given data.
+        lettering_item_variation.full_clean()
+        self.assertEqual(LetteringItemVariation.objects.count(), 1)
+    
+    def test_failure_lettering_item_variation_creation_without_lettering(self):
+        # Test the failure of lettering item variation creation without a lettering.
+        with self.assertRaisesMessage(ValidationError, "{'lettering': ['This field cannot be blank.']}"):
+            lettering_item_variation = LetteringItemVariation(product_variation = self.test_product_variation)
+            lettering_item_variation.full_clean()
+            lettering_item_variation.save()
+        self.assertEqual(LetteringItemVariation.objects.count(), 0)
 
 
 class CommentTestCase(TestCase):
