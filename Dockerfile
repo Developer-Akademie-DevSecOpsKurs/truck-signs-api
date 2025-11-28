@@ -9,4 +9,4 @@ COPY . /app
 
 EXPOSE
 
-ENTRYPOINT
+ENTRYPOINT ["entrypoint.sh"]
