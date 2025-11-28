@@ -3,15 +3,14 @@ set -e
 
 echo "Waiting for postgres to connect ..."
 
+# Wait for the database to be up and ready, if not ready, then sleep for 5 seconds
 while ! nc -z db 5432; do
-  sleep 0.1
+  #TODO: Add missing implementation
 done
 
 echo "PostgreSQL is active"
 
 python manage.py collectstatic --noinput
-python manage.py makemigrations
-python manage.py migrate
 
 echo "Postgresql migrations finished"
 
