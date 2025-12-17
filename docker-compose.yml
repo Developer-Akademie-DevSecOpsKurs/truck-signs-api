@@ -1,7 +1,7 @@
 services:
-  tsa-db:
+  db:
     image: postgres:7-alpine
-    container_name: tsa-db
+    container_name: tsa_db
     env_file: .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -17,26 +17,24 @@ services:
       timeout: 5s
       retries: 5
 
-  tsa-web:
+  backend:
     build: .
-    container_name: tsa-web
+    container_name: tsa_backend
     command: gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000 --workers 4
     environment:
       MODE: prod
       DEBUG_ENABLED: 'False'
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: tsa-db
+      DB_NAME: trucksigns_db
+      DB_USER: trucksigns_user
+      DB_PASSWORD: supertrucksignsuser!
+      DB_HOST: tsa_db
       DB_PORT: 5432
       ALLOWED_HOSTS: localhost,127.0.0.1,tsa-web
     volumes:
       - ./src/staticfiles:/app/src/staticfiles
       - ./src/media:/app/src/media
-    ports:
-      - '8000:8000'
     depends_on:
-      tsa-db:
+      db:
         condition: service_healthy
 
 volumes:
