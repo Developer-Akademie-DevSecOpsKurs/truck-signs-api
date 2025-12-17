@@ -88,6 +88,16 @@ The `settings.py` folder inside the `src/tsa_app` folder contains the different 
 
 The `example.env` file in the project root contains an overview about configuration values that can be set for the app.
 
+### Control Application Settings via Env-Variables
+
+You can provide all configuration via a `.env` file in the project root.
+Copy `example.env` to `.env`, fill in the required values (DB, SECRET_KEY, etc.), and keep this file out of version 
+control to avoid leaking secrets.
+
+**Database switch via MODE**
+- `MODE=prod` -> PostgreSQL, using `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT` from `.env`.
+- `MODE` unset or `MODE=dev` -> SQLite at `src/db.sqlite3`; no DB env vars needed.
+
 ### Models
 
 Most of the models do what can be inferred from their name. The following dots are notes about some of the models to make clearer their propose:
