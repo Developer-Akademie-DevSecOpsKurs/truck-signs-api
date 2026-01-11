@@ -3,6 +3,8 @@ services:
     image: postgres:7-alpine
     container_name: tsa_db
     env_file: .env
+    networks:
+      - tsa-network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -21,6 +23,8 @@ services:
     build: .
     container_name: tsa_backend
     command: gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    networks:
+      - tsa-network
     environment:
       MODE: prod
       DEBUG_ENABLED: 'False'
@@ -39,3 +43,7 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  tsa-network:
+    driver: bridge
