@@ -11,8 +11,8 @@ class CategoryTestCase(TestCase):
         self.test_image = "test-path"
         self.test_base_price = 0.0
         self.test_max_amount_of_lettering_items = -1
-        self.test_height = 0.0
-        self.test_width = 0.0
+        self.test_height = 5.0
+        self.test_width = 5.0
 
     def setUp(self):
         # Deletes all Category objects from the database to ensure a clean state before each test.
@@ -45,4 +45,28 @@ class CategoryTestCase(TestCase):
             category = Category(title=self.test_title)
             category.full_clean()
             category.save()
+        self.assertEqual(Category.objects.count(), 0)
+
+    def test_failure_category_creation_with_height_below_minimum(self):
+        """Test that a height value below 5 raises a ValidationError."""
+        with self.assertRaises(ValidationError):
+            category = Category(
+                title=self.test_title,
+                image=self.test_image,
+                height=4.9,
+                width=self.test_width,
+            )
+            category.full_clean()
+        self.assertEqual(Category.objects.count(), 0)
+
+    def test_failure_category_creation_with_width_below_minimum(self):
+        """Test that a width value below 5 raises a ValidationError."""
+        with self.assertRaises(ValidationError):
+            category = Category(
+                title=self.test_title,
+                image=self.test_image,
+                height=self.test_height,
+                width=0.0,
+            )
+            category.full_clean()
         self.assertEqual(Category.objects.count(), 0)
