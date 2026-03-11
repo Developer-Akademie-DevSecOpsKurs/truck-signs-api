@@ -52,8 +52,9 @@ class OrderTestCase(TestCase):
         self.assertEqual(order.comment, self.test_comment)
 
     def test_successful_order_creation_with_default_values(self):
-        """Tests that an order created with only required fields has expected default values."""
-        order = Order.objects.create(user_email=self.test_user_email, product=self.test_product)
+        """Tests that an order created with only the required user_email field has expected default values."""
+        order = Order.objects.create(user_email=self.test_user_email)
+        order.full_clean()
         self.assertIsNotNone(order.ordered_date)
         self.assertFalse(order.ordered)
         self.assertEqual(order.address1, "Address line 1")

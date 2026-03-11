@@ -41,6 +41,7 @@ class CommentTestCase(TestCase):
     def test_successful_comment_creation_with_default_values(self):
         """Tests that a comment created with only required fields has expected default values."""
         comment = Comment.objects.create(user_email=self.test_user_email, image=self.test_image)
+        comment.full_clean()
         self.assertEqual(comment.text, "")
         self.assertFalse(comment.visible)
 

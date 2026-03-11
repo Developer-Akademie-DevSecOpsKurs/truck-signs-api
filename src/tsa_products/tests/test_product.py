@@ -37,6 +37,7 @@ class ProductTestCase(TestCase):
     def test_successful_product_creation_with_default_values(self):
         """Tests that a product created with only required fields has expected default values."""
         product = Product.objects.create(category=self.test_category, title=self.test_title)
+        product.full_clean()
         self.assertFalse(product.is_uploaded)
         self.assertEqual(product.image, "")
         self.assertEqual(product.detail_image, "")

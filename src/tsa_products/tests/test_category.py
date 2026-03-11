@@ -40,6 +40,7 @@ class CategoryTestCase(TestCase):
     def test_successful_category_creation_with_default_values(self):
         """Tests that a category created with only required fields has expected default values."""
         category = Category.objects.create(title=self.test_title, image=self.test_image)
+        category.full_clean()
         self.assertEqual(category.base_price, 0.0)
         self.assertEqual(category.max_amount_of_lettering_items, -1)
         self.assertEqual(category.height, 0.0)
