@@ -28,6 +28,18 @@ class ProductTestCase(TestCase):
         )
         product.full_clean()
         self.assertEqual(Product.objects.count(), 1)
+        self.assertEqual(product.category, self.test_category)
+        self.assertEqual(product.title, self.test_title)
+        self.assertEqual(product.image, self.test_image)
+        self.assertEqual(product.detail_image, self.test_detail_image)
+        self.assertEqual(product.is_uploaded, self.test_is_uploaded)
+
+    def test_successful_product_creation_with_default_values(self):
+        """Tests that a product created with only required fields has expected default values."""
+        product = Product.objects.create(category=self.test_category, title=self.test_title)
+        self.assertFalse(product.is_uploaded)
+        self.assertEqual(product.image, "")
+        self.assertEqual(product.detail_image, "")
 
     def test_failure_product_creation_without_category(self):
         """Test the failure of product creation without a category."""

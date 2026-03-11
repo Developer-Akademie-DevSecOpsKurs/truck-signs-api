@@ -41,6 +41,24 @@ class OrderTestCase(TestCase):
         )
         order.full_clean()
         self.assertEqual(Order.objects.count(), 1)
+        self.assertIsNotNone(order.ordered_date)
+        self.assertEqual(order.user_email, self.test_user_email)
+        self.assertEqual(order.user_first_name, self.test_user_first_name)
+        self.assertEqual(order.user_last_name, self.test_user_last_name)
+        self.assertEqual(order.address1, self.test_address1)
+        self.assertEqual(order.address2, self.test_address2)
+        self.assertEqual(order.ordered, self.test_ordered)
+        self.assertEqual(order.product, self.test_product)
+        self.assertEqual(order.comment, self.test_comment)
+
+    def test_successful_order_creation_with_default_values(self):
+        """Tests that an order created with only required fields has expected default values."""
+        order = Order.objects.create(user_email=self.test_user_email, product=self.test_product)
+        self.assertIsNotNone(order.ordered_date)
+        self.assertFalse(order.ordered)
+        self.assertEqual(order.address1, "Address line 1")
+        self.assertEqual(order.address2, "Address line 2")
+        self.assertEqual(order.comment, "")
 
     def test_failure_order_creation_without_user_email(self):
         """Test the failure of order creation without a user_email."""

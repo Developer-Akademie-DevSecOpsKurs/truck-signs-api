@@ -38,6 +38,12 @@ class CommentTestCase(TestCase):
             comment.save()
         self.assertEqual(Comment.objects.count(), 0)
 
+    def test_successful_comment_creation_with_default_values(self):
+        """Tests that a comment created with only required fields has expected default values."""
+        comment = Comment.objects.create(user_email=self.test_user_email, image=self.test_image)
+        self.assertEqual(comment.text, "")
+        self.assertFalse(comment.visible)
+
     def test_failure_comment_creation_without_image(self):
         """Test the failure of comment creation without an image-path."""
         with self.assertRaisesMessage(ValidationError, "{'image': ['This field cannot be blank.']}"):
