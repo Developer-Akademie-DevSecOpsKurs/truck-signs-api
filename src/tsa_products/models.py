@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 COLOR_VALIDATOR = RegexValidator(r"^#(?:[0-9a-fA-F]{3}){1,2}$", "only valid hex color code is accepted")
@@ -12,8 +12,8 @@ class Category(models.Model):
     base_price = models.FloatField(default=0.0)
     # -1 means any positive amount
     max_amount_of_lettering_items = models.IntegerField(default=-1)
-    height = models.FloatField(default=0.0)
-    width = models.FloatField(default=0.0)
+    height = models.FloatField(default=5.0, validators=[MinValueValidator(5)])
+    width = models.FloatField(default=5.0, validators=[MinValueValidator(5)])
 
     class Meta:
         verbose_name_plural = "categories"
