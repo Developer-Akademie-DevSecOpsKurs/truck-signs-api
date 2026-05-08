@@ -43,8 +43,8 @@ class CategoryTestCase(TestCase):
         category.full_clean()
         self.assertEqual(category.base_price, 0.0)
         self.assertEqual(category.max_amount_of_lettering_items, -1)
-        self.assertEqual(category.height, 0.0)
-        self.assertEqual(category.width, 0.0)
+        self.assertEqual(category.height, 5.0)
+        self.assertEqual(category.width, 5.0)
 
     def test_failure_category_creation_without_title(self):
         """Test the failure of category creation without a title."""
