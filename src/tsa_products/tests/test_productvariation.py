@@ -24,6 +24,17 @@ class ProductVariationTestCase(TestCase):
         )
         product_variation.full_clean()
         self.assertEqual(ProductVariation.objects.count(), 1)
+        self.assertEqual(product_variation.product, self.test_product)
+        self.assertEqual(product_variation.product_color, self.test_product_color)
+        self.assertEqual(product_variation.amount, self.test_amount)
+
+    def test_successful_product_variation_creation_with_default_values(self):
+        """Tests that a product variation created without optional fields has expected default values."""
+        product_variation = ProductVariation.objects.create(product=self.test_product)
+        product_variation.full_clean()
+        self.assertEqual(ProductVariation.objects.count(), 1)
+        self.assertEqual(product_variation.amount, 1)
+        self.assertIsNone(product_variation.product_color)
 
     def test_failure_product_variation_creation_without_product(self):
         """Test the failure of product variation creation without a product."""

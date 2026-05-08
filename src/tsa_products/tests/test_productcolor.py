@@ -20,3 +20,13 @@ class ProductColorTestCase(TestCase):
         )
         product_color.full_clean()
         self.assertEqual(ProductColor.objects.count(), 1)
+        self.assertEqual(product_color.color_in_hex, self.test_color_in_hex)
+        self.assertEqual(product_color.color_nickname, self.test_color_nickname)
+
+    def test_successful_product_color_creation_with_default_values(self):
+        """Tests that a product color created without arguments has expected default values."""
+        product_color = ProductColor.objects.create()
+        product_color.full_clean()
+        self.assertEqual(ProductColor.objects.count(), 1)
+        self.assertEqual(product_color.color_in_hex, "#000000")
+        self.assertEqual(product_color.color_nickname, "add nickname")

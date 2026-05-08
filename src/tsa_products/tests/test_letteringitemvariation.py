@@ -28,6 +28,9 @@ class LetteringItemVariationTestCase(TestCase):
         )
         lettering_item_variation.full_clean()
         self.assertEqual(LetteringItemVariation.objects.count(), 1)
+        self.assertEqual(lettering_item_variation.lettering, self.test_lettering)
+        self.assertEqual(lettering_item_variation.lettering_item_category, self.test_lettering_item_category)
+        self.assertEqual(lettering_item_variation.product_variation, self.test_product_variation)
 
     def test_failure_lettering_item_variation_creation_without_lettering(self):
         """Test the failure of lettering item variation creation without a lettering."""
