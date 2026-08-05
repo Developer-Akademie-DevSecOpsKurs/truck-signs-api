@@ -109,9 +109,9 @@ db_engine = "django.db.backends.sqlite3" if MODE != "prod" else "django.db.backe
 
 pg_config = {
     "ENGINE": db_engine,
-    "NAME": os.getenv("DB_NAME", "trucksigns_db"),
-    "USER": os.getenv("DB_USER", "trucksigns_user"),
-    "PASSWORD": os.getenv("DB_PASSWORD", "supertrucksignsuser!"),
+    "NAME": os.getenv("POSTGRES_DB", "trucksigns_db"),
+    "USER": os.getenv("POSTGRES_USER", "trucksigns_user"),
+    "PASSWORD": os.getenv("POSTGRES_PASSWORD", "supertrucksignsuser!"),
     "HOST": os.getenv("DB_HOST", "localhost"),
     "PORT": os.getenv("DB_PORT", "5432"),
 }
@@ -187,7 +187,7 @@ if os.getenv("CLOUD_NAME", ""):
 if MODE != "prod" or DEBUG is True:
     logger.debug("dumping settings for debugging/development purposes:")
     print("")
-    print(f"[{"---" * 20} \t\tSTART SETTINGS DEBUG INFO \t{"---" * 20}]")
+    print(f"[{'---' * 20} \t\tSTART SETTINGS DEBUG INFO \t{'---' * 20}]")
     print("")
     print(f"[ROOT BASE DIR]: \t\t{ROOT_BASE_DIR}")
     print(f"[BASE DIR]: \t\t\t{BASE_DIR}")
@@ -199,5 +199,5 @@ if MODE != "prod" or DEBUG is True:
     for key, value in DATABASES["default"].items():
         print(f"  {key}: \t\t\t{value}")
     print("")
-    print(f"[{"---" * 20} \t\tEND SETTINGS DEBUG INFO \t{"---" * 20}]")
+    print(f"[{'---' * 20} \t\tEND SETTINGS DEBUG INFO \t{'---' * 20}]")
     print("")

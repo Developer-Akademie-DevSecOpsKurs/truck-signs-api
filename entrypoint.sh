@@ -4,8 +4,9 @@ set -e
 echo "Waiting for postgres to connect ..."
 
 # Wait for the database to be up and ready, if not ready, then sleep for 5 seconds
-while ! nc -z db 5432; do
-  #TODO: Add missing implementation
+while ! pg_isready -h "$DB_HOST" -p "$DB_PORT" -q; do
+  echo "PostgreSQL not ready - sleep for 5 seconds"
+  sleep 5
 done
 
 echo "PostgreSQL is active"
