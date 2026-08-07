@@ -22,7 +22,7 @@ services:
       dockerfile: Dockerfile
     container_name: tsa_backend
     ports:
-      - '8000:8000'
+      - '8020:8000'
     networks:
       - tsa-network
     env_file: .env
