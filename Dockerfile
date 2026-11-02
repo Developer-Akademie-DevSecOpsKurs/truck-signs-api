@@ -25,7 +25,7 @@ RUN sed -i 's/\r$//' /app/entrypoint.sh
 RUN chmod 755 /app/entrypoint.sh
 
 # The port used by Gunicorn inside the container
-EXPOSE 8000
+EXPOSE 8020
 
 # Start the application through the entrypoint script
 ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
