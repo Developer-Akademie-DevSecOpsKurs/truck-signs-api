@@ -74,12 +74,15 @@ Python 3.12 is used by the backend Docker image.
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:Developer-Akademie-DevSecOpsKurs/truck-signs-api.git
+git clone git@github.com:Erikogeek/truck-signs-api.git
 cd truck-signs-api
 ```
 2. Copy the content of the example.env file into a .env file:
 ```bash
-cp example.env .env / Copy-Item example.env .env
+cp example.env .env
+```
+```shell
+Copy-Item example.env .env
 ```
 3. Build the Docker image and start the application
 ```bash
