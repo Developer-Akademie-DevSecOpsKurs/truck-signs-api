@@ -6,10 +6,6 @@ services:
     container_name: tsa_db
     restart: unless-stopped
 
-    # Load database settings from the local .env file.
-    env_file:
-      - .env
-
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -36,10 +32,6 @@ services:
     container_name: tsa_backend
     restart: unless-stopped
 
-    # Load application configuration and secrets.
-    env_file:
-      - .env
-
     environment:
       MODE: ${MODE}
       DEBUG_ENABLED: ${DEBUG_ENABLED}
@@ -49,7 +41,7 @@ services:
 
     # Expose the API on port 8020 of the host.
     ports:
-      - "8020:8000"
+      - "${HOST_PORT}:8000"
 
     networks:
       - tsa-network
