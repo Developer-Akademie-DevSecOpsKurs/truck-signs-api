@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
+DB_HOST="${DB_HOST:-db}"
+DB_PORT="${DB_PORT:-5432}"
+RETRIES=30
+
 echo "Waiting for postgres to connect ..."
-
-# Wait for the database to be up and ready, if not ready, then sleep for 5 seconds
-while ! nc -z db 5432; do
-  #TODO: Add missing implementation
+until nc -z "$DB_HOST" "$DB_PORT"; do
+  RETRIES=$((RETRIES-1))
+  if [ "$RETRIES" -le 0 ]; then
+    echo "Postgres not reachable, giving up"
+    exit 1
+  fi
+  echo "Postgres not ready yet, sleeping 5 seconds ..."
+  sleep 5
 done
-
 echo "PostgreSQL is active"
 
 python manage.py collectstatic --noinput
-
-#TODO add migrations
+python manage.py migrate --noinput
 echo "Postgresql migrations finished"
 
-gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000
+exec "$@"
