@@ -26,4 +26,3 @@ WORKDIR /app/src
 EXPOSE 8020
 
 ENTRYPOINT ["/app/entrypoint.sh"]
-CMD ["gunicorn", "tsa_app.wsgi:application", "--bind", "0.0.0.0:8020", "--workers", "4"]
