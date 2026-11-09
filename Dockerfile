@@ -1,12 +1,28 @@
-FROM python:2.12
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt .
-RUN pip install
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
 
-EXPOSE
+RUN chmod +x /app/entrypoint.sh \
+    && useradd --create-home appuser \
+    && mkdir -p /app/src/staticfiles /app/src/mediafiles \
+    && chown -R appuser:appuser /app
 
-ENTRYPOINT ["entrypoint.sh"]
+USER appuser
+
+WORKDIR /app/src
+
+EXPOSE 8020
+
+ENTRYPOINT ["/app/entrypoint.sh"]

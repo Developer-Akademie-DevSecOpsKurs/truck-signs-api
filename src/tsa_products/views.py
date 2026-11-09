@@ -1,5 +1,8 @@
 from datetime import datetime
 
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
 from rest_framework import status
 from rest_framework.generics import (
     CreateAPIView,
@@ -30,10 +33,8 @@ from .serializers import (
     ProductVariationSerializer,
 )
 
-# admin_email = settings.EMAIL_ADMIN
-# current_admin_domain = settings.CURRENT_ADMIN_DOMAIN
-
-# Create your views here.
+admin_email = settings.EMAIL_ADMIN
+current_admin_domain = settings.CURRENT_ADMIN_DOMAIN
 
 
 class CategoryListView(ListAPIView):
@@ -168,31 +169,36 @@ class PaymentView(GenericAPIView):
                 return Response({"error": "Internal Server Error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
             # Payment processing removed - implement your own payment logic here
-            # amount = int(order.get_total_price() * 100)
 
             # Send Email to user
-            # email_subject="Purchase made."
-            # message=render_to_string('purchase-made.html', {
-            #     'user': order.user_email,
-            #     'image': order.product.product.image,
-            #     'amount_of_product': str(order.product.amount),
-            #     'total_amount':str("{:.2f}".format(order.get_total_price())),
-            # })
-            # to_email = order.user_email
-            # email = EmailMultiAlternatives(email_subject, to=[to_email])
-            # email.attach_alternative(message, "text/html")
-            # email.send()
-            #
-            # admin_message=render_to_string('admin-purchase-made.html',{
-            #     'user': order.user_email,
-            #     'order': order.id,
-            #     'current_admin_domain':current_admin_domain,
-            # })
+            email_subject = "Purchase made."
+            message = render_to_string(
+                "purchase-made.html",
+                {
+                    "user": order.user_email,
+                    "image": order.product.product.image,
+                    "amount_of_product": str(order.product.amount),
+                    "total_amount": str("{:.2f}".format(order.get_total_price())),
+                },
+            )
+            to_email = order.user_email
+            email = EmailMultiAlternatives(email_subject, to=[to_email])
+            email.attach_alternative(message, "text/html")
+            email.send()
 
-            # to_admin_email = admin_email
-            # email = EmailMultiAlternatives(email_subject, to=[to_admin_email])
-            # email.attach_alternative(admin_message, "text/html")
-            # email.send()
+            admin_message = render_to_string(
+                "admin-purchase-made.html",
+                {
+                    "user": order.user_email,
+                    "order": order.id,
+                    "current_admin_domain": current_admin_domain,
+                },
+            )
+
+            to_admin_email = admin_email
+            email = EmailMultiAlternatives(email_subject, to=[to_admin_email])
+            email.attach_alternative(admin_message, "text/html")
+            email.send()
 
             return Response({"Result": "Success"}, status=status.HTTP_200_OK)
 

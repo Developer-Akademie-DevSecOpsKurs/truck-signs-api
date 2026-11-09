@@ -26,7 +26,7 @@ TEMPLATES_DIR = BASE_DIR / "templates"
 
 # load environment variables from .env file
 has_env_vars_configuration = load_dotenv(ROOT_BASE_DIR / ".env")
-if not has_env_vars_configuration:
+if not has_env_vars_configuration and not os.getenv("SECRET_KEY"):
     logger.warning("could not find .env file, make sure env variables are set as required")
 
 # read configuration from environment, set secure defaults where possible
@@ -59,6 +59,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-in-production")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "http://localhost:8020").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.auth",
@@ -68,6 +69,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    "cloudinary_storage",
     "cloudinary",
     "tsa_products",
     "django.contrib.admin",
@@ -172,6 +174,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_ADMIN = os.getenv("EMAIL_ADMIN", "")
+CURRENT_ADMIN_DOMAIN = os.getenv("CURRENT_ADMIN_DOMAIN", "")
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUD_NAME", ""),
@@ -181,7 +185,7 @@ CLOUDINARY_STORAGE = {
 
 # Only use Cloudinary in production if configured
 if os.getenv("CLOUD_NAME", ""):
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    STORAGES["default"] = {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"}
 
 # Debugging output of settings
 if MODE != "prod" or DEBUG is True:
