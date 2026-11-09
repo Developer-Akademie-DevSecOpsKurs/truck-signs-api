@@ -4,13 +4,13 @@ services:
     container_name: tsa_db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_NAME:?set DB_NAME in .env}
-      POSTGRES_USER: ${DB_USER:?set DB_USER in .env}
+      POSTGRES_DB: ${DB_NAME:-trucksigns_db}
+      POSTGRES_USER: ${DB_USER:-trucksigns_user}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER:-trucksigns_user} -d ${DB_NAME:-trucksigns_db}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -18,16 +18,19 @@ services:
   backend:
     build: .
     image: ${BACKEND_IMAGE:-vadimcebanu/truck-signs-api:latest}
+    pull_policy: build
     container_name: tsa_backend
     restart: unless-stopped
     env_file: .env
     ports:
-      - '8020:8020'
+      - '${APP_PORT:-8020}:8020'
     environment:
-      MODE: prod
-      DEBUG_ENABLED: 'False'
-      DB_HOST: db
-      DB_PORT: 5432
+      MODE: ${MODE:-prod}
+      DEBUG_ENABLED: ${DEBUG_ENABLED:-False}
+      DB_NAME: ${DB_NAME:-trucksigns_db}
+      DB_USER: ${DB_USER:-trucksigns_user}
+      DB_HOST: ${DB_HOST:-db}
+      DB_PORT: ${DB_PORT:-5432}
     volumes:
       - static_data:/app/src/staticfiles
       - media_data:/app/src/mediafiles
