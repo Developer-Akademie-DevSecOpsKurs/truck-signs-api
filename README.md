@@ -11,6 +11,8 @@ The store also allows clients to upload their own designs and to customize them 
 
 This repository contains the **backend** (Django REST API + admin panel), orchestrated with **Docker Compose** together with a **PostgreSQL** database. The app is served by **Gunicorn** (WSGI) and static files by **WhiteNoise**.
 
+**Submission checklist:** [docs/checklist.pdf](./docs/checklist.pdf)
+
 </div>
 
 ## Table of Contents
@@ -48,30 +50,27 @@ This repository contains the **backend** (Django REST API + admin panel), orches
     cd truck-signs-api
     ```
 
-2. Copy `example.env` to `.env` and fill in your own values (see [Environment Variables](#environment-variables)):
+2. Copy `example.env` to `.env` and replace the placeholders with your own values (see [Environment Variables](#environment-variables)):
     ```bash
     cp example.env .env
     ```
-    Generate a secure `SECRET_KEY`:
+    Generate a secure `SECRET_KEY` and passwords:
     ```bash
     python -c "import secrets; print(secrets.token_urlsafe(50))"
     ```
-    > [!WARNING]
-    > Avoid the `$` character in `.env` values – Docker Compose interprets it as a variable. Use `$$` or wrap the value in single quotes.
 
 3. Build and start the stack:
     ```bash
     docker compose up -d --build
     ```
+    On the first start, `entrypoint.sh` automatically runs the migrations, collects the static files and creates the superuser from the `DJANGO_SUPERUSER_*` variables.
 
-4. Create a Django superuser:
-    ```bash
-    docker compose exec backend python manage.py createsuperuser
-    ```
-
-5. Open the admin panel:
+4. Open the admin panel and log in with the superuser credentials from `.env`:
     - locally: `http://localhost:8020/admin/`
     - on a VM: `http://<your-vm-ip>:8020/admin/`
+
+> [!WARNING]
+> Avoid the `$` character in `.env` values – Docker Compose interprets it as a variable. Use `$$` or wrap the value in single quotes.
 
 > [!NOTE]
 > The root URL `/` returns *Not Found*. This is expected, because the project is an API.
@@ -82,24 +81,32 @@ This repository contains the **backend** (Django REST API + admin panel), orches
 
 All configuration is provided via the `.env` file in the project root. Never commit this file – only the variable **names** are documented here, never their values.
 
-| Variable               | Required | Description                                                       |
-| ---------------------- | -------- | ----------------------------------------------------------------- |
-| `SECRET_KEY`           | yes      | Django secret key                                                 |
-| `DB_NAME`              | yes      | PostgreSQL database name                                          |
-| `DB_USER`              | yes      | PostgreSQL user                                                   |
-| `DB_PASSWORD`          | yes      | PostgreSQL password                                               |
-| `ALLOWED_HOSTS`        | yes      | Comma-separated hosts, e.g. `localhost,127.0.0.1,<your-vm-ip>`    |
-| `CSRF_TRUSTED_ORIGINS` | yes      | Comma-separated origins, e.g. `http://<your-vm-ip>:8020`          |
-| `CORS_ALLOWED_ORIGINS` | no       | Allowed frontend origins                                          |
-| `LOG_LEVEL`            | no       | Log level in production (default `ERROR`)                         |
-| `CLOUD_NAME`           | no       | Cloudinary cloud name – enables Cloudinary as media storage       |
-| `CLOUD_API_KEY`        | no       | Cloudinary API key                                                |
-| `CLOUD_API_SECRET`     | no       | Cloudinary API secret                                             |
-| `EMAIL_HOST_USER`      | no       | SMTP user for order emails (currently disabled)                   |
-| `EMAIL_HOST_PASSWORD`  | no       | SMTP password                                                     |
-| `EMAIL_ADMIN`          | no       | Admin email for notifications                                     |
+| Variable                    | Required | Default in Compose  | Description                                                    |
+| --------------------------- | :------: | ------------------- | -------------------------------------------------------------- |
+| `SECRET_KEY`                | ✅       |                     | Django secret key                                              |
+| `DB_PASSWORD`               | ✅       |                     | PostgreSQL password                                            |
+| `ALLOWED_HOSTS`             | ✅       |                     | Comma-separated hosts, e.g. `localhost,127.0.0.1,<your-vm-ip>` |
+| `CSRF_TRUSTED_ORIGINS`      | ✅       |                     | Comma-separated origins, e.g. `http://<your-vm-ip>:8020`       |
+| `DJANGO_SUPERUSER_USERNAME` | ✅       |                     | Superuser created automatically on startup                     |
+| `DJANGO_SUPERUSER_EMAIL`    | ✅       |                     | Email of the superuser                                         |
+| `DJANGO_SUPERUSER_PASSWORD` | ✅       |                     | Password of the superuser                                      |
+| `DB_NAME`                   |          | `trucksigns_db`     | PostgreSQL database name                                       |
+| `DB_USER`                   |          | `trucksigns_user`   | PostgreSQL user                                                |
+| `DB_HOST`                   |          | `db`                | Database host (Compose service name)                           |
+| `DB_PORT`                   |          | `5432`              | Database port                                                  |
+| `MODE`                      |          | `prod`              | `prod` = PostgreSQL, `dev` = SQLite                            |
+| `DEBUG_ENABLED`             |          | `False`             | Django debug mode                                              |
+| `APP_PORT`                  |          | `8020`              | Host port of the app                                           |
+| `CORS_ALLOWED_ORIGINS`      |          |                     | Allowed frontend origins                                       |
+| `LOG_LEVEL`                 |          |                     | Log level in production (`ERROR` if unset)                     |
+| `CLOUD_NAME`                |          |                     | Cloudinary cloud name – enables Cloudinary as media storage    |
+| `CLOUD_API_KEY`             |          |                     | Cloudinary API key                                             |
+| `CLOUD_API_SECRET`          |          |                     | Cloudinary API secret                                          |
+| `EMAIL_HOST_USER`           |          |                     | SMTP user for order emails (currently disabled)                |
+| `EMAIL_HOST_PASSWORD`       |          |                     | SMTP password                                                  |
+| `EMAIL_ADMIN`               |          |                     | Admin email for notifications                                  |
 
-`MODE=prod`, `DEBUG_ENABLED=False`, `DB_HOST=db` and `DB_PORT=5432` are set directly in `docker-compose.yml`.
+`docker-compose.yml` contains no hard-coded configuration values: every value is read from `.env` with the syntax `${VARIABLE:-default}`, and the default is only used if the variable is not set. Secrets (`DB_PASSWORD`) have no default – Compose stops with an error if it is missing.
 
 ### Database Switch via MODE
 
@@ -118,11 +125,12 @@ docker compose up -d --build
              ├─ waits for the database
              ├─ collectstatic
              ├─ migrate
+             ├─ creates the superuser (skipped if it already exists)
              └─ gunicorn (WSGI) on port 8020
 ```
 
-- **Dockerfile:** official `python:3.12-slim` base image, dependencies installed from `requirements.txt` (cached layer), runs as a non-root user, exposes port `8020`, starts through `entrypoint.sh`.
-- **entrypoint.sh:** waits until PostgreSQL is reachable, runs migrations and `collectstatic`, then starts Gunicorn with `exec "$@"`.
+- **Dockerfile:** official `python:3.12-slim` base image, dependencies installed from `requirements.txt` (cached layer), runs as a non-root user, exposes port `8020`. The complete start flow lives in `entrypoint.sh` (no separate `CMD`).
+- **entrypoint.sh:** waits until PostgreSQL is reachable, runs `collectstatic` and the migrations, creates the superuser idempotently with `createsuperuser --noinput` (only if the user does not exist yet), then starts Gunicorn with `exec`, so Gunicorn runs as PID 1 and receives stop signals directly.
 - **docker-compose.yml:** defines the `db` and `backend` services. They communicate over the default Compose network, the backend reaches the database via the hostname `db`. PostgreSQL has no published port and is only reachable inside this network.
 
 ### Volumes and Persistence
