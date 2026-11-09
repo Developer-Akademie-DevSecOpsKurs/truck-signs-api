@@ -28,11 +28,11 @@ services:
     environment:
       MODE: prod
       DEBUG_ENABLED: 'False'
-      DB_NAME: trucksigns_db
-      DB_USER: trucksigns_user
-      DB_PASSWORD: supertrucksignsuser!
-      DB_HOST: tsa_db
-      DB_PORT: 5432
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
       ALLOWED_HOSTS: localhost,127.0.0.1,tsa-web
     volumes:
       - ./src/staticfiles:/app/src/staticfiles
