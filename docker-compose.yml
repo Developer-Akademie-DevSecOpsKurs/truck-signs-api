@@ -2,7 +2,10 @@ services:
   db:
     image: postgres:18-alpine
     container_name: tsa_db
-    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - tsa-network
     restart: on-failure
@@ -41,7 +44,7 @@ services:
       ALLOWED_HOSTS: localhost,127.0.0.1,tsa-web
       DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
       DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
-      DJANGO_SUPERUSER_PASSOWRD: ${DJANGO_SUPERUSER_PASSOWORD}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SUPERUSER_PASSWORD}
     volumes:
       - ./src/staticfiles:/app/src/staticfiles
       - ./src/media:/app/src/media
