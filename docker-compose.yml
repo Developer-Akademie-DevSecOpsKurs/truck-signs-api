@@ -1,39 +1,47 @@
 services:
   db:
-    image: postgres:7-alpine
+    image: postgres:18-alpine
     container_name: tsa_db
     env_file: .env
     networks:
       - tsa-network
+    restart: on-failure
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - '5432:5432'
+      - postgres_data:/var/lib/postgresql
     healthcheck:
       test:
         [
           'CMD-SHELL',
-          'pg_isready -U ${DB_USER} -d ${DB_NAME}',
+          'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}',
         ]
       interval: 10s
       timeout: 5s
       retries: 5
 
   backend:
-    build: .
+    image: tsa_backend:1.0
+    build: 
+      context: .
+      dockerfile: Dockerfile
     container_name: tsa_backend
-    command: gunicorn tsa_app.wsgi:application --bind 0.0.0.0:8000 --workers 4
+    restart: on-failure
+    ports:
+      - 8020:8000
     networks:
       - tsa-network
     environment:
       MODE: prod
       DEBUG_ENABLED: 'False'
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       ALLOWED_HOSTS: localhost,127.0.0.1,tsa-web
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SUPERUSER_USERNAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SUPERUSER_EMAIL}
+      DJANGO_SUPERUSER_PASSOWRD: ${DJANGO_SUPERUSER_PASSOWORD}
     volumes:
       - ./src/staticfiles:/app/src/staticfiles
       - ./src/media:/app/src/media
