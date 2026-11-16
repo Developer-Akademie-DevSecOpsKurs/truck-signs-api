@@ -1,0 +1,16 @@
+# Secrets
+.env
+
+# Git history
+.git
+
+# Local artefacts that are generated inside the container
+**/db.sqlite3
+**/staticfiles
+**/mediafiles
+
+# Python caches and virtual environments
+**/__pycache__
+**/*.pyc
+venv
+.venv
