@@ -15,13 +15,20 @@ The store also allows clients to upload their own designs and to customize them 
 
 - [Signs for Trucks](#signs-for-trucks)
   - [Table of Contents](#table-of-contents)
+  - [About the Project](#about-the-project)
   - [Prerequisites](#prerequisites)
   - [Quickstart](#quickstart)
+    - [Build the Docker image](#build-the-docker-image)
+    - [Start with Docker Compose](#start-with-docker-compose)
+    - [Create the first superuser](#create-the-first-superuser)
   - [Usage](#usage)
+    - [Run the containers with docker run](#run-the-containers-with-docker-run)
+    - [Configuration](#configuration)
     - [Settings](#settings)
     - [Models](#models)
     - [Brief Explanation of the Views](#brief-explanation-of-the-views)
     - [Installation](#installation)
+  - [Files in this Repository](#files-in-this-repository)
   - [Screenshots of the Django Backend Admin Panel](#screenshots-of-the-django-backend-admin-panel)
     - [Mobile View](#mobile-view)
     - [Desktop View](#desktop-view)
@@ -31,10 +38,20 @@ The store also allows clients to upload their own designs and to customize them 
     - [Django and DRF](#django-and-drf)
     - [Miscellaneous](#miscellaneous)
 
+## About the Project
+
+This repository contains the Django REST backend of the online store *Signs for Trucks*.
+It is packaged as a Docker image (Python 3.12, served by Gunicorn) and runs together with a
+PostgreSQL 18 database. On every start the container waits for the database, applies the
+migrations, creates a superuser if none exists and then starts the WSGI application.
+
 ## Prerequisites
 
-* [Python 3.12.0](https://www.python.org/downloads/release/python-3120/)
+* [Docker](https://docs.docker.com/get-docker/) with the Compose plugin (`docker compose`)
 * [Git](https://git-scm.com/install/)
+
+For the optional local setup without Docker see [Installation](#installation)
+(Python 3.12 is required there).
 
 ## Quickstart
 
@@ -44,43 +61,111 @@ git clone git@github.com:Developer-Akademie-DevSecOpsKurs/truck-signs-api.git
 cd truck-signs-api
 ```
 
-2. Copy the content of the example.env file into a .env file:
+2. Copy the example configuration and fill in your own values (see [Configuration](#configuration)):
 ```bash
 cp example.env .env
 ```
 
-3. Create virtual environment:
+### Build the Docker image
+
 ```bash
-python -m venv <venv_name>
+docker build -t tsa_backend:1.0 .
 ```
 
-4. Activate virtual environment:
+The image is based on `python:3.12-slim`. The `.dockerignore` file makes sure that
+`.env`, `.git` and local virtual environments are not copied into the image.
+
+### Start with Docker Compose
+
 ```bash
-source <venv_name>/scripts/activate
+docker compose up --build -d
 ```
 
-5. Install requirements:
+The API is then reachable on port `8020` of the host, for example
+`http://localhost:8020/admin/login/`. Database data is stored in the named volume
+`postgres_data` and survives restarts of the containers. Both containers restart
+automatically on failure.
+
+Stop the containers (data is kept):
 ```bash
-pip install -r requirements.txt
+docker compose down
 ```
 
-6. Migrate database:
-```bash
-python src/manage.py makemigrations
-python src/manage.py migrate
-```
+> [!WARNING]
+> `docker compose down -v` also deletes the database volume and all stored data.
 
-7. Collect static files:
-```bash
-python src/manage.py collectstatic
-```
+### Create the first superuser
 
-8. Start the Python Development Server:
-```bash
-python src/manage.py runserver
-```
+No manual step is needed. On start, `entrypoint.sh` creates a superuser from the
+`DJANGO_SUPERUSER_*` variables of your `.env` file. If a superuser already exists, this step is skipped.
 
 ## Usage
+
+### Run the containers with docker run
+
+Instead of Docker Compose you can start the containers by hand. Replace every
+`<PLACEHOLDER>` with your own value. Never commit real passwords or IP addresses.
+
+1. Create a network and a volume:
+```bash
+docker network create <NETWORK_NAME>
+docker volume create <VOLUME_NAME>
+```
+
+2. Start the database:
+```bash
+docker run -d \
+  --name <DB_CONTAINER_NAME> \
+  --network <NETWORK_NAME> \
+  --restart on-failure \
+  -e POSTGRES_DB=<DB_NAME> \
+  -e POSTGRES_USER=<DB_USER> \
+  -e POSTGRES_PASSWORD=<DB_PASSWORD> \
+  -v <VOLUME_NAME>:/var/lib/postgresql \
+  postgres:18-alpine
+```
+
+3. Start the backend (the image must be built first, see [Build the Docker image](#build-the-docker-image)):
+```bash
+docker run -d \
+  --name <BACKEND_CONTAINER_NAME> \
+  --network <NETWORK_NAME> \
+  --restart on-failure \
+  -p <HOST_PORT>:8000 \
+  -e MODE=prod \
+  -e DEBUG_ENABLED=False \
+  -e SECRET_KEY=<SECRET_KEY> \
+  -e DB_NAME=<DB_NAME> \
+  -e DB_USER=<DB_USER> \
+  -e DB_PASSWORD=<DB_PASSWORD> \
+  -e DB_HOST=<DB_CONTAINER_NAME> \
+  -e DB_PORT=5432 \
+  -e ALLOWED_HOSTS=localhost,<SERVER_IP_OR_DOMAIN> \
+  -e DJANGO_SUPERUSER_USERNAME=<ADMIN_USER> \
+  -e DJANGO_SUPERUSER_EMAIL=<ADMIN_EMAIL> \
+  -e DJANGO_SUPERUSER_PASSWORD=<ADMIN_PASSWORD> \
+  tsa_backend:1.0
+```
+
+`<HOST_PORT>` is the port on the host (the Compose file uses `8020`). Inside the container,
+Gunicorn always listens on port `8000`.
+
+### Configuration
+
+All values are set through environment variables. With Docker Compose they are read from
+the `.env` file; `example.env` lists every variable with a placeholder.
+
+| Variable | Meaning |
+|---|---|
+| `SECRET_KEY` | Django secret key, must not be empty |
+| `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | Database name and credentials (used by the database container and the backend) |
+| `DB_HOST`, `DB_PORT` | Where the backend finds the database (`db` and `5432` with Compose) |
+| `ALLOWED_HOST` | Host name or IP under which the API is called (added to Django's `ALLOWED_HOSTS`) |
+| `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL`, `DJANGO_SUPERUSER_PASSWORD` | Superuser that is created on first start |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` | Credentials for sending e-mails |
+| `CLOUD_NAME`, `CLOUD_API_KEY`, `CLOUD_API_SECRET` | Cloudinary credentials for image uploads |
+
+Secrets belong only in the local `.env` file, which is excluded from Git and from the Docker image.
 
 ### Settings
 
@@ -142,9 +227,9 @@ The behavior of some of the views had to be modified to address functionalities 
         ```
     3. For the `postgres` database, the default configuration should be:
         ```bash
-        DB_NAME=trucksigns_db
-        DB_USER=trucksigns_user
-        DB_PASSWORD=supertrucksignsuser!
+        DB_NAME=<DB_NAME>
+        DB_USER=<DB_USER>
+        DB_PASSWORD=<DB_PASSWORD>
         DB_HOST=localhost
         DB_PORT=5432
         ```
@@ -179,6 +264,23 @@ Congratulations =) !!! The App should be running in [localhost:8000](http://loca
 > category Truck Sign.
 
 ---
+
+## Files in this Repository
+
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Builds the backend image (`python:3.12-slim`, installs requirements, sets the entrypoint) |
+| `entrypoint.sh` | Container start script: waits for the database, runs `collectstatic` and `migrate`, creates a superuser if none exists, starts Gunicorn |
+| `docker-compose.yml` | Runs the backend and the PostgreSQL database with a shared network, a named volume and restart policies |
+| `.dockerignore` | Keeps `.env`, `.git`, virtual environments and similar files out of the image |
+| `example.env` | Template with all environment variables; copy it to `.env` |
+| `requirements.txt` | Python dependencies installed into the image |
+| `pyproject.toml` | Project and tool configuration |
+| `Procfile` | Process definition for platform deployments |
+| `.gitignore` | Files that Git ignores (for example `.env`) |
+| `.github/workflows/` | GitHub Actions: `build.yaml`, `check-open-pr.yaml`, `test.yaml` |
+| `docs/testing.md` | Linting and testing setup |
+| `src/` | The Django project |
 
 ## Screenshots of the Django Backend Admin Panel
 
