@@ -325,9 +325,14 @@ Logs in to `ghcr.io` with the built-in `GITHUB_TOKEN`, builds the image with Doc
 |---|---|
 | `Dockerfile` | Builds the application image (Python 3.12 slim, installs dependencies, starts `entrypoint.sh`) |
 | `docker-compose.yml` | Runs the `backend` and `db` services with a named volume for the database |
+| `.dockerignore` | Keeps `.env`, the git history and local artefacts out of the Docker build context |
+| `.gitignore` | Keeps `.env`, virtual environments and generated files out of version control |
 | `entrypoint.sh` | Start script of the container (database wait, migrations, static files, superuser, gunicorn) |
 | `example.env` | Template for the `.env` file with all configurable variables |
 | `requirements.txt` | Python dependencies |
+| `pyproject.toml` | Configuration for `black`, `isort` and `flake8` (used by the lint job in CI) |
+| `Procfile` | Start command (`gunicorn`) for platforms that read a Procfile. Not used by the Docker setup, which starts gunicorn in `entrypoint.sh` |
+| `docs/testing.md` | Documentation of linting and test tooling |
 | `.github/workflows/` | CI workflows, see [CI Pipelines](#ci-pipelines) |
 | `src/` | Django application |
 
