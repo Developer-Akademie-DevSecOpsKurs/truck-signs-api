@@ -68,6 +68,8 @@ ALLOWED_HOSTS=<COMMA_SEPARATED_HOSTS>
 DB_NAME=<YOUR_DB_NAME>
 DB_USER=<YOUR_DB_USER>
 DB_PASSWORD=<YOUR_DB_PASSWORD>
+DJANGO_SUPERUSER_USERNAME=<YOUR_ADMIN_NAME>
+DJANGO_SUPERUSER_EMAIL=<YOUR_ADMIN_EMAIL>
 DJANGO_SUPERUSER_PASSWORD=<YOUR_ADMIN_PASSWORD>
 ```
 
@@ -76,7 +78,7 @@ DJANGO_SUPERUSER_PASSWORD=<YOUR_ADMIN_PASSWORD>
 docker compose up --build -d
 ```
 
-5. Open the admin panel at [http://localhost:8020/admin/](http://localhost:8020/admin/) and log in with the superuser (default username: `admin`, password: the value of `DJANGO_SUPERUSER_PASSWORD`).
+5. Open the admin panel at [http://localhost:8020/admin/](http://localhost:8020/admin/) and log in with the superuser (username and password: the values of `DJANGO_SUPERUSER_USERNAME` and `DJANGO_SUPERUSER_PASSWORD`).
 
 6. Stop the containers (the data is kept):
 ```bash
@@ -128,8 +130,8 @@ control to avoid leaking secrets.
 | `DB_USER` | yes | PostgreSQL user |
 | `DB_PASSWORD` | yes | Password of the PostgreSQL user |
 | `DJANGO_SUPERUSER_PASSWORD` | yes | Password of the superuser that is created on the first start |
-| `DJANGO_SUPERUSER_USERNAME` | no | Superuser name, default: `admin` |
-| `DJANGO_SUPERUSER_EMAIL` | no | Superuser e-mail, default: `admin@example.com` |
+| `DJANGO_SUPERUSER_USERNAME` | yes | Login name of the superuser that is created on the first start |
+| `DJANGO_SUPERUSER_EMAIL` | yes | E-mail address of the superuser |
 
 `docker-compose.yml` sets `MODE=prod`, `DEBUG_ENABLED=False`, `DB_HOST=db` and `DB_PORT=5432` for the `backend` service itself. Values in the `.env` file for these variables have no effect in Docker Compose.
 
@@ -206,6 +208,8 @@ docker run -d --name tsa_backend --network tsa-network -p 8020:8020 \
   -e DB_PASSWORD=<DB_PASSWORD> \
   -e SECRET_KEY=<YOUR_SECRET_KEY> \
   -e ALLOWED_HOSTS=<COMMA_SEPARATED_HOSTS> \
+  -e DJANGO_SUPERUSER_USERNAME=<YOUR_ADMIN_NAME> \
+  -e DJANGO_SUPERUSER_EMAIL=<YOUR_ADMIN_EMAIL> \
   -e DJANGO_SUPERUSER_PASSWORD=<YOUR_ADMIN_PASSWORD> \
   trucksigns-api
 ```
